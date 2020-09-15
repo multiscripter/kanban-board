@@ -1,0 +1,7 @@
+[run]
+include =
+    ./kbboard/controllers/*
+    ./kbboard/models/*
+    ./kbboard/views.py
+omit =
+    */__init__.py
