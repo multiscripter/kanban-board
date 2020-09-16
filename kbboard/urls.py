@@ -20,7 +20,11 @@ from django.contrib import admin
 from django.urls import path
 from django.views.generic import RedirectView
 
+from kbboard.controllers import KanbanBoard
+
 urlpatterns = [
+    path('tasks/<int:id>/', KanbanBoard.as_view()),
+    path('tasks/', KanbanBoard.as_view()),
     path('admin/', admin.site.urls),
     # Инструкция на случай если favicon.ico не прописан в тэге head страницы
     # и не настроена отдача favicon.ico в Nginx.
