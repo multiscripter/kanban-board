@@ -1,5 +1,7 @@
 from datetime import datetime
 from datetime import timedelta
+from unittest import skip
+
 from django.test import LiveServerTestCase
 import json
 from kbboard.controllers import KanbanBoard

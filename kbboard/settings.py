@@ -135,13 +135,13 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 LOG_DIR = os.path.join(BASE_DIR, 'log/')
 
-CSRF_USE_SESSIONS = False
-CSRF_COOKIE_HTTPONLY = False
-CSRF_COOKIE_NAME = 'XSRF-TOKEN'
-CSRF_HEADER_NAME = 'HTTP_X_XSRF_TOKEN'
+# CSRF_USE_SESSIONS = False
+# CSRF_COOKIE_HTTPONLY = False
+# CSRF_COOKIE_NAME = 'XSRF-TOKEN'
+# CSRF_HEADER_NAME = 'HTTP_X_XSRF_TOKEN'
 
-# REST_FRAMEWORK = {
-#     'DEFAULT_AUTHENTICATION_CLASSES': (
-#         'rest_framework.authentication.SessionAuthentication',
-#     ),
-# }
+REST_FRAMEWORK = {
+  'DEFAULT_AUTHENTICATION_CLASSES': (
+    'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+  ),
+}
