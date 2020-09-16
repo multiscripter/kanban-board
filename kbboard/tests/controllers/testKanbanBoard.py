@@ -122,7 +122,7 @@ class TestKanbanBoard(LiveServerTestCase):
         first = Task.objects.first()
         uri = f'/tasks/{first.id}/'
         response = self.client.patch(uri, data, content_type='application/json')
-        self.assertTrue(304, response.status_code)
+        self.assertTrue(400, response.status_code)
 
     def test_previous_status(self):
         """Test: Method PATCH, URI /tasks/<int:id>/
