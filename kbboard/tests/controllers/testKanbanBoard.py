@@ -113,6 +113,48 @@ class TestKanbanBoard(LiveServerTestCase):
 
         self.assertRegex(str(task['payment']), '\d+\.\d{2}')
 
+    def test_same_status(self):
+        """Test: Method PATCH, URI /tasks/<int:id>/
+        Update task. Set status = TODO."""
+
+        data = {
+            'status': Task.Statuses.TODO
+        }
+        first = Task.objects.first()
+        uri = f'/tasks/{first.id}/'
+        response = self.client.patch(uri, data, content_type='application/json')
+        self.assertTrue(304, response.status_code)
+
+    def test_previous_status(self):
+        """Test: Method PATCH, URI /tasks/<int:id>/
+        Update task. Set status = 1. And then 0."""
+
+        data = {
+            'status': Task.Statuses.IN_PROGRESS
+        }
+        first = Task.objects.first()
+        uri = f'/tasks/{first.id}/'
+        response = self.client.patch(uri, data, content_type='application/json')
+        self.assertTrue(205, response.status_code)
+
+        data = {
+            'status': Task.Statuses.TODO
+        }
+        response = self.client.patch(uri, data, content_type='application/json')
+        self.assertTrue(409, response.status_code)
+
+    def test_incorrect_status(self):
+        """Test: Method PATCH, URI /tasks/<int:id>/
+        Update task. Set status = 999."""
+
+        data = {
+            'status': 999
+        }
+        first = Task.objects.first()
+        uri = f'/tasks/{first.id}/'
+        response = self.client.patch(uri, data, content_type='application/json')
+        self.assertTrue(400, response.status_code)
+
     def test_payment_formula(self):
         """Test payment formula."""
 
