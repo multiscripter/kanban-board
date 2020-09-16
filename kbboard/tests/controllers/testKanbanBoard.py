@@ -1,12 +1,11 @@
 from datetime import datetime
 from datetime import timedelta
-from unittest import skip
-
 from django.test import LiveServerTestCase
 import json
-from kbboard.controllers import KanbanBoard
 from kbboard.models import Task
+from kbboard.services import KanbanBoardService
 import pytz
+from unittest import skip
 
 # python manage.py test kbboard.tests.controllers.testKanbanBoard
 
@@ -170,5 +169,5 @@ class TestKanbanBoard(LiveServerTestCase):
         )
         delta = end_dt - start_dt
         hours = delta.total_seconds() / 3600
-        payment = hours * KanbanBoard.COST_PER_HOUR
+        payment = hours * KanbanBoardService.COST_PER_HOUR
         self.assertEqual(262.5, payment)

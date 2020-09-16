@@ -2,6 +2,7 @@
 include =
     ./kbboard/controllers/*
     ./kbboard/models/*
+    ./kbboard/services/*
     ./kbboard/views.py
 omit =
     */__init__.py

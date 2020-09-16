@@ -1,1 +1,1 @@
-I try Django 3
+Test task "Kanban board".
