@@ -110,7 +110,7 @@ class TestKanbanBoard(LiveServerTestCase):
         end_dt = pytz.utc.localize(end_dt)
         self.assertTrue(start_dt < end_dt)
 
-        self.assertRegex(str(task['payment']), '\d+\.\d{2}')
+        self.assertRegex(str(task['payment']), '\d+\.\d{,2}')
 
     def test_same_status(self):
         """Test: Method PATCH, URI /tasks/<int:id>/

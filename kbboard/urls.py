@@ -19,10 +19,11 @@ from django.conf.urls import url
 from django.contrib import admin
 from django.urls import path
 from django.views.generic import RedirectView
-
 from kbboard.controllers import KanbanBoard
+from kbboard.controllers import SwaggerSchemaView
 
 urlpatterns = [
+    path('openapi/', SwaggerSchemaView.as_view()),
     path('tasks/<int:id>/', KanbanBoard.as_view()),
     path('tasks/', KanbanBoard.as_view()),
     path('admin/', admin.site.urls),
