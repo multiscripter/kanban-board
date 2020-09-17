@@ -24,7 +24,7 @@ from kbboard.controllers import SwaggerSchemaView
 
 urlpatterns = [
     path('openapi/', SwaggerSchemaView.as_view()),
-    path('tasks/<int:id>/', KanbanBoard.as_view()),
+    path('tasks/<str:id>/', KanbanBoard.as_view()),
     path('tasks/', KanbanBoard.as_view()),
     path('admin/', admin.site.urls),
     # Инструкция на случай если favicon.ico не прописан в тэге head страницы

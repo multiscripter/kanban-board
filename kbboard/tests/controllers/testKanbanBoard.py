@@ -11,7 +11,7 @@ from unittest import skip
 
 
 class TestKanbanBoard(LiveServerTestCase):
-    """Tests for KanbanBoard"""
+    """Test KanbanBoard controller."""
 
     def setUp(self):
         Task.objects.bulk_create([
@@ -37,6 +37,17 @@ class TestKanbanBoard(LiveServerTestCase):
         tasks = json.loads(decoded)
         self.assertEqual(2, len(tasks))
 
+    def test_get_tasks_error_incorrect_path(self):
+        """Test: Method GET, URI /tasks/100500/
+        Get tasks. Error: 404. Incorrect path."""
+
+        response = self.client.get('/tasks/100500/')
+        self.assertTrue(404, response.status_code)
+
+        decoded = response.content.decode('utf8')
+        actual = json.loads(decoded)
+        self.assertEqual('incorrect path', actual['error'])
+
     def test_create_task(self):
         """Test: Method POST, URI /tasks/
         Create task."""
@@ -58,8 +69,58 @@ class TestKanbanBoard(LiveServerTestCase):
         actual = json.loads(response.content.decode('utf8'))
         self.assertEqual(expected, actual)
 
+    def test_create_task_error_incorrect_path(self):
+        """Test: Method POST, URI /tasks/100500/
+        Create task. Error: 404. Incorrect path."""
+
+        data = {
+            'title': 'test-task-3'
+        }
+        response = self.client.post('/tasks/100500/', data)
+        self.assertTrue(404, response.status_code)
+
+        decoded = response.content.decode('utf8')
+        actual = json.loads(decoded)
+        self.assertEqual('incorrect path', actual['error'])
+
+    def test_create_task_error_unmapped_path(self):
+        """Test: Method POST, URI /unmapped-path/
+        Create task. Error: 404."""
+
+        data = {
+            'title': 'test-task-3'
+        }
+        response = self.client.post('/unmapped-path/', data)
+        self.assertTrue(404, response.status_code)
+
+    def test_create_task_error_title_is_not_set(self):
+        """Test: Method POST, URI /tasks/
+        Create task. Error: 400. Title is not set."""
+
+        data = dict()
+        response = self.client.post('/tasks/', data)
+        self.assertTrue(400, response.status_code)
+
+        decoded = response.content.decode('utf8')
+        actual = json.loads(decoded)
+        self.assertEqual('title is not set', actual['error'])
+
+    def test_create_task_error_title_is_empty(self):
+        """Test: Method POST, URI /tasks/
+        Create task. Error: 400. Title is empty."""
+
+        data = {
+            'title': ''
+        }
+        response = self.client.post('/tasks/', data)
+        self.assertTrue(400, response.status_code)
+
+        decoded = response.content.decode('utf8')
+        actual = json.loads(decoded)
+        self.assertEqual('title is empty', actual['error'])
+
     def test_start_task(self):
-        """Test: Method PATCH, URI /tasks/<int:id>/
+        """Test: Method PATCH, URI /tasks/<str:id>/
         Update task. Set status = IN_PROGRESS."""
 
         data = {
@@ -80,7 +141,7 @@ class TestKanbanBoard(LiveServerTestCase):
         self.assertEqual(expected.date(), actual.date())
 
     def test_finish_task(self):
-        """Test: Method PATCH, URI /tasks/<int:id>/
+        """Test: Method PATCH, URI /tasks/<str:id>/
         Update task. Set status = DONE."""
 
         first = Task.objects.first()
@@ -111,6 +172,61 @@ class TestKanbanBoard(LiveServerTestCase):
         self.assertTrue(start_dt < end_dt)
 
         self.assertRegex(str(task['payment']), '\d+\.\d{,2}')
+
+    def test_update_task_error_incorrect_path(self):
+        """Test: Method PATCH, URI /tasks/fake-path/
+        Update task. Error: 404. Incorrect path."""
+
+        data = {
+            'status': Task.Statuses.IN_PROGRESS
+        }
+        uri = '/tasks/fake-path/'
+        response = self.client.patch(uri, data, content_type='application/json')
+        self.assertTrue(404, response.status_code)
+
+        decoded = response.content.decode('utf8')
+        actual = json.loads(decoded)
+        self.assertEqual('incorrect path', actual['error'])
+
+    def test_update_task_error_no_body(self):
+        """Test: Method PATCH, URI /tasks/100500/
+        Update task. Error: 400. No body."""
+
+        uri = '/tasks/100500/'
+        response = self.client.patch(uri, '', content_type='application/json')
+        self.assertTrue(400, response.status_code)
+
+        decoded = response.content.decode('utf8')
+        actual = json.loads(decoded)
+        self.assertEqual('no body', actual['error'])
+
+    def test_update_task_error_status_is_not_set(self):
+        """Test: Method PATCH, URI /tasks/100500/
+        Update task. Error: 400. Status is not set."""
+
+        data = {}
+        uri = '/tasks/100500/'
+        response = self.client.patch(uri, data, content_type='application/json')
+        self.assertTrue(400, response.status_code)
+
+        decoded = response.content.decode('utf8')
+        actual = json.loads(decoded)
+        self.assertEqual('status is not set', actual['error'])
+
+    def test_update_task_error_status_is_empty(self):
+        """Test: Method PATCH, URI /tasks/100500/
+        Update task. Error: 400. Status is empty."""
+
+        data = {
+            'status': ''
+        }
+        uri = '/tasks/100500/'
+        response = self.client.patch(uri, data, content_type='application/json')
+        self.assertTrue(400, response.status_code)
+
+        decoded = response.content.decode('utf8')
+        actual = json.loads(decoded)
+        self.assertEqual('status is empty', actual['error'])
 
     def test_same_status(self):
         """Test: Method PATCH, URI /tasks/<int:id>/

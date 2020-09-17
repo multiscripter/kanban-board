@@ -6,6 +6,7 @@ from rest_framework_swagger import renderers
 
 
 class SwaggerSchemaView(APIView):
+    TITLE = 'Kanban board REST service API'
     permission_classes = [AllowAny]
     renderer_classes = [
         renderers.OpenAPIRenderer,
@@ -14,7 +15,7 @@ class SwaggerSchemaView(APIView):
 
     def get(self, request):
         generator = SchemaGenerator(
-            title='Rest API Document',
+            title=SwaggerSchemaView.TITLE,
             url='http://kanban-board.bot.net/'
         )
         schema = generator.get_schema(request=request)
